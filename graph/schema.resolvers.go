@@ -6,20 +6,20 @@ package graph
 import (
 	"context"
 	"fmt"
-
 	"github.com/JHaig343/graphql-server/graph/generated"
 	"github.com/JHaig343/graphql-server/graph/model"
+	"github.com/JHaig343/graphql-server/internal/links"
+	"strconv"
+	// "github.com/JHaig343/graphql-server/internal/users"
 )
 
 func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
-	//panic(fmt.Errorf("not implemented"))
-	var link model.Link
-	var user model.User
-	link.Address = input.Address
+	var link links.Link
 	link.Title = input.Title
-	user.Name = "test"
-	link.User = &user
-	return &link, nil
+	link.Address = input.Address
+	linkID := link.Save()
+	return &model.Link{ID: strconv.FormatInt(linkID, 10), Title: link.Title, Address: link.Address}, nil
+
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
@@ -37,15 +37,13 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input *model.Refres
 }
 
 func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
-	//panic(fmt.Errorf("not implemented"))
-	var links []*model.Link
-	dummyLink := model.Link{
-		Title:   "Some dummy news link",
-		Address: "https://google.com",
-		User:    &model.User{Name: "admin"},
+	var resultLinks []*model.Link
+	var dbLinks []links.Link
+	dbLinks = links.GetAll()
+	for _, link := range dbLinks {
+		resultLinks = append(resultLinks, &model.Link{ID: link.ID, Title: link.Title, Address: link.Address})
 	}
-	links = append(links, &dummyLink)
-	return links, nil
+	return resultLinks, nil
 
 }
 

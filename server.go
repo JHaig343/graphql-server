@@ -21,8 +21,7 @@ func main() {
 		port = defaultPort
 	}
 
-	// router := chi.NewRouter()
-
+	// FIXME: migrations currently aren't working properly - had to make tables manually
 	database.InitDB()
 	database.Migrate()
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))

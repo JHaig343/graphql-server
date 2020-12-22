@@ -23,7 +23,9 @@ func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) 
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	var user model.User
+	user.Name = "John"
+	return user.ID, nil
 }
 
 func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
@@ -37,10 +39,10 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, input *model.Refres
 func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
 	//panic(fmt.Errorf("not implemented"))
 	var links []*model.Link
-	dummyLink := model.Link {
-		Title: "Some dummy news link",
+	dummyLink := model.Link{
+		Title:   "Some dummy news link",
 		Address: "https://google.com",
-		User: &model.User{Name: "admin"},
+		User:    &model.User{Name: "admin"},
 	}
 	links = append(links, &dummyLink)
 	return links, nil

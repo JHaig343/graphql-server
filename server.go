@@ -1,14 +1,16 @@
 package main
 
 import (
-	"log"
-	"net/http"
-	"os"
-
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/JHaig343/graphql-server/graph"
 	"github.com/JHaig343/graphql-server/graph/generated"
+	database "github.com/JHaig343/graphql-server/internal/pkg/db/migrations/mysql"
+	// "github.com/go-chi/chi"
+	// "github.com/golang-migrate/migrate/v4/database"
+	"log"
+	"net/http"
+	"os"
 )
 
 const defaultPort = "8080"
@@ -19,6 +21,10 @@ func main() {
 		port = defaultPort
 	}
 
+	// router := chi.NewRouter()
+
+	database.InitDB()
+	database.Migrate()
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
